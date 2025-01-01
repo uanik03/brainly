@@ -4,13 +4,30 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { FaYoutube } from "react-icons/fa";
 import "./contantCardStyle.css"
 import { FaSquareXTwitter } from "react-icons/fa6";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useRecoilValue } from 'recoil';
+import { userInfoState } from '@/recoil/authAtoms';
+
+
 
 interface CardType {
   title: string;
   link?: string;
   type: string;
   content?: string;
-  handleCardDelete: ()=>void
+  contentId:string;
+  userId:string
+  handleCardDelete: (carId:string)=>Promise<void>
 
 }
 
@@ -21,6 +38,8 @@ interface CardType {
 // }
 
 const ContentCard = (props: CardType) => {
+
+  const user = useRecoilValue(userInfoState)
 
   function convertToEmbedUrl(youtubeUrl:string) {
     const url = new URL(youtubeUrl);
@@ -33,9 +52,6 @@ const ContentCard = (props: CardType) => {
 
   const embedLink = convertToEmbedUrl(props.link as string)
 
-  const handleCardDelete = async()=>{
-
-  }
   return (
     <Card className="w-96 mx-5 mt-5 rounded-md flex flex-col justify-between" style={{ minHeight: "300px", maxHeight: "500px" }}>
       <CardHeader>
@@ -78,7 +94,27 @@ const ContentCard = (props: CardType) => {
           {props.type=="twitter"&&<FaSquareXTwitter fontSize={22}/>}
         </div>
         <div className="flex gap-2">
-          <MdDelete fontSize={22} onClick={handleCardDelete}  />
+     {   
+     (user?.userId === props.userId  ) &&
+      <AlertDialog>
+      <AlertDialogTrigger> <MdDelete fontSize={22} className='cursor-pointer' /></AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your content
+            and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={()=>props.handleCardDelete(props.contentId)}>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>}
+    
+      
+         
         </div>
       </CardFooter>
     </Card>

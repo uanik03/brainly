@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
-export interface LinkType {
-    hash: String;
-    userId: mongoose.Schema.Types.ObjectId
-}
+// export interface LinkType {
+//     hash: String;
+//     userId: mongoose.Types.ObjectId
+// }
 
-const LinkModelSchema= new mongoose.Schema<LinkType>({
+const LinkModelSchema= new mongoose.Schema({
     hash:{
         type:String
     },
     userId:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:String,
         ref:"userSchema"
     }
 

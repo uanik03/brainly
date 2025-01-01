@@ -19,6 +19,7 @@ const auth = async(req:Request, res:Response, next:NextFunction)=>{
         
         next();
     } catch (error) {
+        console.log("auth 22")
         console.log(error)
         res.status(500).json({
             msg: "something went wrong"

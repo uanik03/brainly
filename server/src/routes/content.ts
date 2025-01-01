@@ -6,13 +6,13 @@ const router = Router()
 
 router.route("/").post(auth,addContent)
 router.route("/").get(auth, getAllContent)
-router.route("/:contentId").put(auth, updateContent)
-router.route("/:contentId").delete(auth, deleteContent)
-
 
 router.route("/share").post(auth, createShareableLink)
 router.route("/shared/:linkHash").get( getUserBrain)
 router.route("/share").delete(auth, deleteShareableLink)
+router.route("/:contentId").put(auth, updateContent)
+router.route("/:contentId").delete(auth, deleteContent)
+
 
 
 

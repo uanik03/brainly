@@ -6,6 +6,7 @@ import { JWTUser } from "../utils"
 import userSchema from "../models/user";
 import contentSchema from "../models/content";
 import LinkModel from "../models/LinkModel";
+import mongoose, { Schema } from "mongoose";
 
 
 export const addContent = async (req: Request, res: Response): Promise<void> => {
@@ -64,6 +65,7 @@ export const getAllContent = async (req: Request, res: Response) => {
         return
 
     } catch (error) {
+        console.log("content.ts 68: ",error)
         res.status(500).json({
             msg: "something went wrong"
         })
@@ -74,40 +76,39 @@ export const deleteContent = async (req: Request, res: Response) => {
     try {
         const { id } = req.User as JWTUser;
 
-
         const { contentId } = req.params
-
         const user = await userSchema.findById({ _id: id })
-
+                
         if (!user) {
             res.status(404).json({
                 msg: "User not found"
             })
             return;
         }
-
-        const content = await contentSchema.findById({ id: contentId })
+        console.log("jinga jinga")
+        
+        const content = await contentSchema.findById({ _id: contentId })
         if (!content) {
             res.status(400).json({
                 msg: "invalid content"
             })
             return
         }
-        if (content.userId !== id) {
-            res.status(400).json({
-                msg: "Unauthorized access"
-            })
-            return
 
+        if (content.userId !== id  ) { 
+             res.status(403).json({ msg: "Unauthorized access" });
+             return
         }
 
-        await contentSchema.findByIdAndDelete({ id: contentId })
+
+        await contentSchema.findByIdAndDelete( contentId )
         res.status(200).json({
             msg: "Content deleted successfully",
             contentId
         })
         return
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             msg: "something went wrong"
         })
@@ -210,6 +211,8 @@ export const createShareableLink = async (req: Request, res: Response) => {
 
 export const deleteShareableLink = async (req:Request, res: Response) => {
     try {
+
+        console.log("alo brother alo alo")
         const { id } = req.User as JWTUser;
         const user = await userSchema.findById({ _id: id })
     
@@ -272,7 +275,6 @@ export const getUserBrain = async(req:Request, res:Response)=>{
             return
         }
 
-        console.log(existingLink)
         
         const content = await contentSchema.find({ userId: existingLink.userId })
         res.status(200).json({

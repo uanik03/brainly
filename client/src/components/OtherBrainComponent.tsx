@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ContentCard from "./ContentCard";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { contentListState } from "@/recoil/contentAtoms";
-import { authTokenState } from "@/recoil/authAtoms";
-import { deleteCard, getAllContent } from "@/services/contentService";
+import { useParams } from "react-router-dom";
+import { getSharedContent } from "@/services/contentService";
+import { error } from "console";
 
 
 
-const MainComponent = () => {
+const OtherBrainComponent = () => {
   const [contents,setContents] = useRecoilState(contentListState);
-  const token = useRecoilValue(authTokenState);
+  const {hash} = useParams()
 
 
   const handleCardDelete = async(cardId:string)=>{
-    const res = await deleteCard(token as string, cardId)
-    if(!res){
-        return
-    }
-    console.log(res)
-    const contents = await getAllContent(token as string);
-    setContents(contents)
+  console.log(cardId)
 
   }
 
   useEffect(() => {
     (async()=>{
-      const contents = await getAllContent(token as string);
-      setContents(contents)
+     try {
+       const contents = await getSharedContent(hash as string);
+       if(contents instanceof Error){
+      alert("please provide valid link")
+
+        return
+        
+       }
+       setContents(contents)
+     } catch (error) {
+      console.log(error)
+     }
 
     })()
   }, []);
@@ -57,4 +62,4 @@ const MainComponent = () => {
   );
 };
 
-export default MainComponent;
+export default OtherBrainComponent;

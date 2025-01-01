@@ -17,7 +17,7 @@ import Navbar from "@/components/Navbar";
 import { login, signUp } from "@/services/authService";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { userInfoState } from "@/recoil/authAtoms";
+import { authTokenState, userInfoState } from "@/recoil/authAtoms";
 
 const signUpFormSchema = z.object({
   username: z.string().min(2, {
@@ -51,6 +51,7 @@ const loginFormSchema = z.object({
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const setUser = useSetRecoilState(userInfoState);
+  const setToken = useSetRecoilState(authTokenState)
 
   const navigate = useNavigate();
 
@@ -78,6 +79,7 @@ const Auth = () => {
       localStorage.setItem("token", resData.token);
       localStorage.setItem("user", JSON.stringify(resData.user));
       setUser(resData.user);
+      setToken(resData.token)
       alert(resData.msg);
       navigate("/home");
     } catch (error) {
@@ -91,6 +93,8 @@ const Auth = () => {
       localStorage.setItem("token", resData.token);
       localStorage.setItem("user", JSON.stringify(resData.user));
       setUser(resData.user);
+      setToken(resData.token)
+
       alert(resData.msg);
       navigate("/home");
     } catch (error) {}

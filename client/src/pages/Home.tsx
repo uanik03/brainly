@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <div className="h-screen w-full flex flex-col">
-      <Navbar handleAddButton={handleAddButton}/>
+      <Navbar handleAddButton={handleAddButton} isUser={true} />
       <div className="flex-1 flex">
         <Sidebar />
         <MainComponent />
